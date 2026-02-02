@@ -69,7 +69,7 @@ export default function Home() {
                 </p>
                 <a
                   className="mt-4 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-semibold tracking-wide text-emerald-950 shadow-[0_0_50px_rgba(16,185,129,0.22)] transition hover:bg-emerald-400 sm:w-auto"
-                  href="https://wa.me/5543999027670"
+                  href="https://wa.me/5543991271652"
                   target="_blank"
                   rel="noreferrer"
                 >
