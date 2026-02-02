@@ -7,19 +7,11 @@ type Phase = "idle" | "playing" | "exiting" | "done";
 export default function IntroGate({
   children,
   videoSrc = "/intro.mp4",
-  storageKey = "introPlayed",
 }: {
   children: React.ReactNode;
   videoSrc?: string;
-  storageKey?: string;
 }) {
-  const [phase, setPhase] = useState<Phase>(() => {
-    try {
-      return sessionStorage.getItem(storageKey) === "1" ? "done" : "idle";
-    } catch {
-      return "idle";
-    }
-  });
+  const [phase, setPhase] = useState<Phase>("playing");
   const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -41,16 +33,10 @@ export default function IntroGate({
     if (isDone) {
       return "opacity-100 translate-y-0 blur-0";
     }
-    return "opacity-0 translate-y-2 blur-[2px] pointer-events-none select-none";
+    return "opacity-0 translate-y-2 blur-[1px] pointer-events-none select-none";
   }, [isDone]);
 
   function finish() {
-    try {
-      sessionStorage.setItem(storageKey, "1");
-    } catch {
-      // ignore
-    }
-
     setPhase("exiting");
     window.setTimeout(() => setPhase("done"), 500);
   }
@@ -63,11 +49,29 @@ export default function IntroGate({
     try {
       await videoRef.current?.play();
     } catch {
-      setError(
-        "Não foi possível reproduzir o vídeo automaticamente. Toque em play.",
-      );
+      setError("Não foi possível iniciar o vídeo.");
     }
   }
+
+  useEffect(() => {
+    if (phase !== "playing") return;
+    const el = videoRef.current;
+    if (!el) return;
+
+    // Autoplay com som é bloqueado; por isso usamos muted.
+    el.muted = true;
+
+    const promise = el.play();
+    if (promise && typeof (promise as Promise<void>).catch === "function") {
+      (promise as Promise<void>).catch(() => {
+        // Se o navegador bloquear autoplay, cai pra um estado que pede clique.
+        setPhase("idle");
+        setError(
+          "Seu navegador bloqueou o autoplay. Clique para iniciar o vídeo.",
+        );
+      });
+    }
+  }, [phase]);
 
   return (
     <>
@@ -80,79 +84,44 @@ export default function IntroGate({
 
       {isOverlayVisible ? (
         <div
-          className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black transition-opacity duration-500 ${
+          className={`fixed inset-0 z-[9999] bg-black transition-opacity duration-500 ${
             phase === "exiting" ? "opacity-0" : "opacity-100"
           }`}
         >
           <div className="relative h-full w-full">
-            {/* Fundo */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,0,0,0.18),rgba(0,0,0,0.92)_55%,rgba(0,0,0,1)_100%)]" />
+            <video
+              ref={videoRef}
+              src={videoSrc}
+              playsInline
+              preload="auto"
+              muted
+              autoPlay
+              onEnded={finish}
+              onError={() =>
+                setError(
+                  "Não encontrei o vídeo em /public/intro.mp4 (adicione o arquivo).",
+                )
+              }
+              className="absolute inset-0 h-full w-full object-cover"
+            />
 
-            {/* Conteúdo */}
-            <div className="relative mx-auto flex h-full max-w-5xl flex-col items-center justify-center gap-6 px-5 py-10 text-zinc-50">
-              <div className="w-full max-w-3xl">
-                <div className="overflow-hidden rounded-2xl border border-red-500/25 bg-black/60 shadow-[0_0_120px_rgba(255,0,0,0.25)]">
-                  <div className="relative aspect-video w-full bg-black">
-                    <video
-                      ref={videoRef}
-                      src={videoSrc}
-                      playsInline
-                      preload="auto"
-                      onEnded={finish}
-                      onError={() =>
-                        setError(
-                          "Não encontrei o vídeo em /public/intro.mp4 (adicione o arquivo).",
-                        )
-                      }
-                      className={`h-full w-full object-cover ${
-                        phase === "idle" ? "opacity-0" : "opacity-100"
-                      } transition-opacity duration-300`}
-                    />
-
-                    {phase === "idle" ? (
-                      <button
-                        type="button"
-                        onClick={start}
-                        className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/40 px-6 text-center"
-                      >
-                        <p className="st-title text-4xl font-extrabold tracking-tight sm:text-5xl">
-                          Clique para entrar
-                        </p>
-                        <p className="max-w-xl text-sm text-zinc-200 sm:text-base">
-                          A intro dura ~8 segundos. No final, você já cai direto
-                          no formulário de confirmação.
-                        </p>
-                        <span className="inline-flex items-center justify-center rounded-xl bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_40px_rgba(255,0,0,0.30)] hover:bg-red-500">
-                          Iniciar
-                        </span>
-                      </button>
-                    ) : null}
-
-                    {phase !== "idle" ? (
-                      <div className="absolute right-3 top-3 flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={finish}
-                          className="rounded-lg border border-zinc-600/60 bg-black/50 px-3 py-2 text-xs font-semibold text-zinc-100 hover:border-red-500/40"
-                        >
-                          Pular
-                        </button>
-                      </div>
-                    ) : null}
-                  </div>
-
-                  {error ? (
-                    <div className="border-t border-red-500/20 bg-red-950/30 px-4 py-3 text-sm text-red-200">
-                      {error}
-                    </div>
-                  ) : null}
-                </div>
-
-                <p className="mt-4 text-center text-xs text-zinc-400">
-                  Dica: coloque seu vídeo em <span className="font-mono">public/intro.mp4</span>.
-                </p>
+            {/* Overlay leve apenas para legibilidade do botão (quando necessário) */}
+            {phase === "idle" ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/25 px-6">
+                <button
+                  type="button"
+                  onClick={start}
+                  className="rounded-2xl border border-red-500/25 bg-black/50 px-6 py-4 text-center text-zinc-50 shadow-[0_0_80px_rgba(255,0,0,0.18)] backdrop-blur"
+                >
+                  <p className="st-title text-4xl font-extrabold tracking-tight sm:text-5xl">
+                    Iniciar
+                  </p>
+                  <p className="mt-2 max-w-xl text-sm text-zinc-200 sm:text-base">
+                    {error ?? "Clique para reproduzir o vídeo."}
+                  </p>
+                </button>
               </div>
-            </div>
+            ) : null}
           </div>
         </div>
       ) : null}
