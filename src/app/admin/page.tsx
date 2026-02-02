@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import PrintButton from "@/components/PrintButton";
+import Link from "next/link";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -43,11 +44,17 @@ export default async function AdminPage() {
 
           <div className="flex items-center gap-3">
             <PrintButton />
+            <Link
+              href="/admin/print"
+              className="rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-zinc-50 backdrop-blur hover:border-red-500/40"
+            >
+              Baixar PDF
+            </Link>
           </div>
         </div>
 
         <section className="mb-6 grid gap-3 sm:grid-cols-5">
-          <div className="rounded-2xl border border-zinc-700/40 bg-black/30 p-4">
+          <div className="rounded-2xl border border-white/12 bg-white/[0.06] p-4">
             <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">
               Total nomes
             </p>
@@ -55,7 +62,7 @@ export default async function AdminPage() {
               {counts.total}
             </p>
           </div>
-          <div className="rounded-2xl border border-zinc-700/40 bg-black/30 p-4">
+          <div className="rounded-2xl border border-white/12 bg-white/[0.06] p-4">
             <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">
               Confirmados
             </p>
@@ -63,7 +70,7 @@ export default async function AdminPage() {
               {counts.yes}
             </p>
           </div>
-          <div className="rounded-2xl border border-zinc-700/40 bg-black/30 p-4">
+          <div className="rounded-2xl border border-white/12 bg-white/[0.06] p-4">
             <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">
               Talvez
             </p>
@@ -71,13 +78,13 @@ export default async function AdminPage() {
               {counts.maybe}
             </p>
           </div>
-          <div className="rounded-2xl border border-zinc-700/40 bg-black/30 p-4">
+          <div className="rounded-2xl border border-white/12 bg-white/[0.06] p-4">
             <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">
               Não
             </p>
             <p className="mt-1 text-2xl font-bold text-zinc-50">{counts.no}</p>
           </div>
-          <div className="rounded-2xl border border-zinc-700/40 bg-black/30 p-4">
+          <div className="rounded-2xl border border-white/12 bg-white/[0.06] p-4">
             <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">
               Pessoas (c/ acomp.)
             </p>
@@ -87,9 +94,9 @@ export default async function AdminPage() {
           </div>
         </section>
 
-        <div className="overflow-hidden rounded-2xl border border-zinc-700/40 bg-black/30">
+        <div className="overflow-hidden rounded-2xl border border-white/12 bg-white/[0.06]">
           <table className="w-full border-collapse text-left text-sm">
-            <thead className="bg-black/40">
+            <thead className="bg-black/20">
               <tr className="text-xs uppercase tracking-[0.18em] text-zinc-300">
                 <th className="px-4 py-3">Nome</th>
                 <th className="px-4 py-3">Presença</th>

@@ -39,10 +39,10 @@ body {
   position: relative;
   isolation: isolate;
   background:
-    radial-gradient(1200px 900px at 20% 15%, rgba(255, 0, 0, 0.22), transparent 60%),
-    radial-gradient(900px 700px at 85% 30%, rgba(160, 60, 255, 0.14), transparent 65%),
-    radial-gradient(800px 600px at 50% 90%, rgba(0, 190, 255, 0.12), transparent 60%),
-    linear-gradient(180deg, #0b0b14 0%, #070712 45%, #05050e 100%);
+    radial-gradient(1200px 900px at 20% 15%, rgba(255, 60, 60, 0.26), transparent 62%),
+    radial-gradient(900px 700px at 85% 30%, rgba(170, 90, 255, 0.18), transparent 68%),
+    radial-gradient(800px 600px at 50% 90%, rgba(0, 210, 255, 0.15), transparent 63%),
+    linear-gradient(180deg, #141427 0%, #101022 50%, #0b0b1b 100%);
 }
 
 .bg-hawkins::before {
@@ -72,7 +72,7 @@ body {
   background: radial-gradient(
     900px 650px at 50% 20%,
     rgba(0, 0, 0, 0) 10%,
-    rgba(0, 0, 0, 0.34) 92%
+    rgba(0, 0, 0, 0.18) 92%
   );
 }
 
@@ -80,6 +80,14 @@ body {
   :root {
     --background: #ffffff;
     --foreground: #111111;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   body {
@@ -94,5 +102,15 @@ body {
   .bg-hawkins::before,
   .bg-hawkins::after {
     display: none !important;
+    content: none !important;
+  }
+
+  table {
+    width: 100% !important;
+  }
+
+  th,
+  td {
+    padding: 6px 8px !important;
   }
 }

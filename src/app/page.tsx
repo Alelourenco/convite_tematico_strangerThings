@@ -32,7 +32,7 @@ export default function Home() {
                 <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">
                   Local
                 </p>
-                <p className="mt-1 font-semibold">Rua Mitsuki shome 300</p>
+                <p className="mt-1 font-semibold">Rua Mitsuki Shime 300</p>
               </div>
             </div>
           </header>
