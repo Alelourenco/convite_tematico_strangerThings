@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-type Status = "YES" | "NO" | "MAYBE";
+type Status = "YES" | "NO";
 
 export default function RsvpForm() {
   const router = useRouter();
@@ -26,8 +26,6 @@ export default function RsvpForm() {
         return "Confirmado";
       case "NO":
         return "Não vou conseguir";
-      case "MAYBE":
-        return "Talvez";
     }
   }, [status]);
 
@@ -35,7 +33,6 @@ export default function RsvpForm() {
     () =>
       [
         { value: "YES" as const, label: "Confirmado" },
-        { value: "MAYBE" as const, label: "Talvez" },
         { value: "NO" as const, label: "Não vou conseguir" },
       ],
     [],
@@ -120,7 +117,7 @@ export default function RsvpForm() {
 
         <div>
           <label className="text-xs uppercase tracking-[0.22em] text-zinc-300">
-            Presença
+            Confirmar presença
           </label>
 
           <div ref={statusWrapRef} className="relative mt-2">
@@ -235,7 +232,7 @@ export default function RsvpForm() {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             rows={3}
-            placeholder="Ex: Levo o refrigerante!"
+            placeholder="Ex: Levo a linguiça (Lá ele)!"
             className="mt-2 w-full resize-none rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-zinc-50 outline-none placeholder:text-zinc-400 focus:border-red-500/60 focus:shadow-[0_0_0_3px_rgba(255,0,0,0.12)]"
           />
         </div>

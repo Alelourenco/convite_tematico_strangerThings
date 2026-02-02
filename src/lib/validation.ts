@@ -7,7 +7,7 @@ export const rsvpSchema = z.object({
     .min(1, "Informe seu nome")
     .min(2, "Nome muito curto")
     .max(80, "Nome muito longo"),
-  status: z.enum(["YES", "NO", "MAYBE"]),
+  status: z.enum(["YES", "NO"]),
   bringCompanion: z.boolean().default(false),
   companionName: z
     .string()
