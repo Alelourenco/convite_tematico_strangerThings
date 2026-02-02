@@ -44,10 +44,13 @@ export default function IntroGate({
 
   async function start() {
     setError(null);
+    setSoundEnabled(true);
     setPhase("playing");
 
     // play() precisa de gesto do usuário. Esse handler já é um clique.
     try {
+      const el = videoRef.current;
+      if (el) el.muted = false;
       await videoRef.current?.play();
     } catch {
       setError("Não foi possível iniciar o vídeo.");
@@ -69,22 +72,6 @@ export default function IntroGate({
       // Se falhar, cai no fluxo padrão que mostra mensagem e permite tentar novamente.
       setPhase("idle");
       setError("Seu navegador bloqueou o autoplay. Toque em “Iniciar”.");
-    }
-  }
-
-  async function enableSound() {
-    const el = videoRef.current;
-    if (!el) return;
-
-    try {
-      el.muted = false;
-      el.volume = 1;
-      setSoundEnabled(true);
-      await el.play();
-    } catch {
-      setError(
-        "O navegador bloqueou áudio automático. Toque novamente para ativar.",
-      );
     }
   }
 
@@ -139,32 +126,6 @@ export default function IntroGate({
               }
               className="absolute inset-0 h-full w-full object-cover"
             />
-
-            {/* Controles mínimos */}
-            {phase === "playing" ? (
-              <div className="absolute right-3 top-3 flex items-center gap-2">
-                {!soundEnabled ? (
-                  <button
-                    type="button"
-                    onClick={enableSound}
-                    className="rounded-lg border border-white/20 bg-black/35 px-3 py-2 text-xs font-semibold text-zinc-100 backdrop-blur hover:border-red-500/40"
-                  >
-                    Ativar som
-                  </button>
-                ) : (
-                  <span className="rounded-lg border border-white/15 bg-black/25 px-3 py-2 text-xs font-semibold text-zinc-200 backdrop-blur">
-                    Som ativo
-                  </span>
-                )}
-                <button
-                  type="button"
-                  onClick={finish}
-                  className="rounded-lg border border-white/20 bg-black/35 px-3 py-2 text-xs font-semibold text-zinc-100 backdrop-blur hover:border-red-500/40"
-                >
-                  Pular
-                </button>
-              </div>
-            ) : null}
 
             {/* Pré-intro */}
             {phase === "confirm" ? (
