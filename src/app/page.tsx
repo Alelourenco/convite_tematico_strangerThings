@@ -5,10 +5,6 @@ export default function Home() {
     <div className="min-h-screen bg-hawkins text-zinc-50">
       <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col px-5 py-10 sm:px-8">
         <header className="mb-10">
-          <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-red-500/25 bg-black/30 px-4 py-2 text-xs uppercase tracking-[0.28em] text-zinc-200">
-            Convite • Stranger Things
-          </p>
-
           <h1 className="st-title text-5xl font-extrabold tracking-tight sm:text-6xl">
             Brenda
           </h1>
@@ -28,13 +24,13 @@ export default function Home() {
               <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">
                 Horário
               </p>
-              <p className="mt-1 font-semibold">07:00</p>
+              <p className="mt-1 font-semibold">19:00</p>
             </div>
             <div className="rounded-2xl border border-zinc-700/40 bg-black/30 p-4">
               <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">
                 Local
               </p>
-              <p className="mt-1 font-semibold">(definir)</p>
+              <p className="mt-1 font-semibold">Rua Mitsuki shome 300</p>
             </div>
           </div>
         </header>
