@@ -38,6 +38,7 @@ Abra http://localhost:3000
 ## Como funciona
 
 - A home (`/`) tem o formulário de RSVP.
+- Ao entrar no site, há uma intro em vídeo (após clique). Coloque o arquivo em `public/intro.mp4`.
 - O backend salva em Postgres via Prisma.
 - A lista de convidados fica em `/admin` (protegida por HTTP Basic Auth).
 - A página admin tem botão de “Imprimir” (CSS de print incluído).
