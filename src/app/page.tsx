@@ -8,11 +8,10 @@ export default function Home() {
         <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col px-5 py-10 sm:px-8">
           <header className="mb-10">
             <h1 className="st-title text-5xl font-extrabold tracking-tight sm:text-6xl">
-              Brenda
+              Brenda 21 Years
             </h1>
             <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-200 sm:text-lg">
-              Você está sendo convocado para uma noite estranha (e incrível).
-              Confirme sua presença abaixo.
+              Você esta sendo convocado para desbravar os mistérios de Hawkins e adentrar no mundo invertido. Vai ter coragem?
             </p>
 
             <div className="mt-6 grid gap-3 text-sm text-zinc-200 sm:grid-cols-3">
