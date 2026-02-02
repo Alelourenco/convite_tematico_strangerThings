@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AttendanceStatus {
+  YES
+  NO
+  MAYBE
+}
+
+model Guest {
+  id            String            @id @default(cuid())
+  name          String
+  phone         String?
+  status        AttendanceStatus  @default(YES)
+  additionalQty Int               @default(0)
+  message       String?
+  createdAt     DateTime          @default(now())
+
+  @@index([createdAt])
+  @@map("guests")
+}

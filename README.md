@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Convite (RSVP) — Aniversário da Brenda (tema Stranger Things)
 
-## Getting Started
+App Next.js com formulário de confirmação de presença e área admin para listar/imprimir convidados.
 
-First, run the development server:
+## Rodar localmente
+
+1) Instale dependências
+
+```bash
+npm install
+```
+
+2) Configure variáveis de ambiente
+
+Crie um `.env` baseado em `.env.example`.
+
+Obrigatório:
+- `DATABASE_URL` (Postgres)
+
+Para acessar `/admin`:
+- `ADMIN_USER`
+- `ADMIN_PASSWORD`
+
+3) Suba as tabelas (Prisma)
+
+```bash
+npm run prisma:migrate
+```
+
+4) Rode o servidor
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Como funciona
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- A home (`/`) tem o formulário de RSVP.
+- O backend salva em Postgres via Prisma.
+- A lista de convidados fica em `/admin` (protegida por HTTP Basic Auth).
+- A página admin tem botão de “Imprimir” (CSS de print incluído).
 
-## Learn More
+## Deploy no Vercel (com persistência)
 
-To learn more about Next.js, take a look at the following resources:
+1) Suba o repositório (GitHub/GitLab/Bitbucket) e importe no Vercel.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2) Crie um banco Postgres
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Opção mais simples: **Vercel Postgres** (Storage). Ele cria o `DATABASE_URL` automaticamente.
 
-## Deploy on Vercel
+3) Configure env vars no Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `DATABASE_URL`
+- `ADMIN_USER`
+- `ADMIN_PASSWORD`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4) Deploy
+
+O build já roda `prisma generate` antes do `next build`.
+
+5) Migrações em produção
+
+Recomendado: rodar `prisma migrate deploy` no deploy pipeline. Se você quiser, eu ajusto para usar esse fluxo no Vercel.
+
+## Admin (impressão)
+
+Abra `/admin` e autentique com `ADMIN_USER` / `ADMIN_PASSWORD`.
+Depois clique em **Imprimir** para gerar uma versão limpa (tabela).
