@@ -66,7 +66,7 @@ export default function RsvpForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="w-full rounded-2xl border border-red-500/30 bg-black/40 p-6 shadow-[0_0_80px_rgba(255,0,0,0.18)] backdrop-blur"
+      className="w-full rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-[0_0_80px_rgba(255,0,0,0.16)] backdrop-blur"
     >
       <div className="grid gap-4">
         <div>
@@ -78,7 +78,7 @@ export default function RsvpForm() {
             onChange={(e) => setName(e.target.value)}
             required
             placeholder="Ex: Lucas Almeida"
-            className="mt-2 w-full rounded-xl border border-zinc-700/70 bg-zinc-950/80 px-4 py-3 text-zinc-50 outline-none ring-0 placeholder:text-zinc-600 focus:border-red-500/70 focus:shadow-[0_0_0_3px_rgba(255,0,0,0.15)]"
+            className="mt-2 w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-zinc-50 outline-none ring-0 placeholder:text-zinc-400 focus:border-red-500/60 focus:shadow-[0_0_0_3px_rgba(255,0,0,0.12)]"
           />
         </div>
 
@@ -91,7 +91,7 @@ export default function RsvpForm() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="(11) 99999-9999"
-              className="mt-2 w-full rounded-xl border border-zinc-700/70 bg-zinc-950/80 px-4 py-3 text-zinc-50 outline-none placeholder:text-zinc-600 focus:border-red-500/70 focus:shadow-[0_0_0_3px_rgba(255,0,0,0.15)]"
+              className="mt-2 w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-zinc-50 outline-none placeholder:text-zinc-400 focus:border-red-500/60 focus:shadow-[0_0_0_3px_rgba(255,0,0,0.12)]"
             />
           </div>
 
@@ -102,7 +102,7 @@ export default function RsvpForm() {
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as Status)}
-              className="mt-2 w-full rounded-xl border border-zinc-700/70 bg-zinc-950/80 px-4 py-3 text-zinc-50 outline-none focus:border-red-500/70 focus:shadow-[0_0_0_3px_rgba(255,0,0,0.15)]"
+              className="mt-2 w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-zinc-50 outline-none focus:border-red-500/60 focus:shadow-[0_0_0_3px_rgba(255,0,0,0.12)]"
             >
               <option value="YES">Confirmado</option>
               <option value="MAYBE">Talvez</option>
@@ -142,7 +142,7 @@ export default function RsvpForm() {
             onChange={(e) => setMessage(e.target.value)}
             rows={3}
             placeholder="Ex: Levo o refrigerante!"
-            className="mt-2 w-full resize-none rounded-xl border border-zinc-700/70 bg-zinc-950/80 px-4 py-3 text-zinc-50 outline-none placeholder:text-zinc-600 focus:border-red-500/70 focus:shadow-[0_0_0_3px_rgba(255,0,0,0.15)]"
+            className="mt-2 w-full resize-none rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-zinc-50 outline-none placeholder:text-zinc-400 focus:border-red-500/60 focus:shadow-[0_0_0_3px_rgba(255,0,0,0.12)]"
           />
         </div>
 

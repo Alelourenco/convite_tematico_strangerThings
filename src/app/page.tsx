@@ -16,19 +16,19 @@ export default function Home() {
             </p>
 
             <div className="mt-6 grid gap-3 text-sm text-zinc-200 sm:grid-cols-3">
-              <div className="rounded-2xl border border-zinc-700/40 bg-black/30 p-4">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
                 <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">
                   Data
                 </p>
                 <p className="mt-1 font-semibold">07/03</p>
               </div>
-              <div className="rounded-2xl border border-zinc-700/40 bg-black/30 p-4">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
                 <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">
                   Horário
                 </p>
                 <p className="mt-1 font-semibold">19:00</p>
               </div>
-              <div className="rounded-2xl border border-zinc-700/40 bg-black/30 p-4">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
                 <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">
                   Local
                 </p>
@@ -41,7 +41,7 @@ export default function Home() {
             <RsvpForm />
 
             <aside className="space-y-6">
-              <div className="rounded-2xl border border-zinc-700/40 bg-black/30 p-6">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-6">
                 <h2 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-200">
                   Regras de sobrevivência
                 </h2>
@@ -61,7 +61,7 @@ export default function Home() {
                 </ul>
               </div>
 
-              <div className="rounded-2xl border border-zinc-700/40 bg-black/30 p-6">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-6">
                 <h2 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-200">
                   Contato
                 </h2>

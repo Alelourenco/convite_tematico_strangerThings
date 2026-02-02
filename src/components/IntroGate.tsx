@@ -13,6 +13,7 @@ export default function IntroGate({
 }) {
   const [phase, setPhase] = useState<Phase>("playing");
   const [error, setError] = useState<string | null>(null);
+  const [soundEnabled, setSoundEnabled] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const isDone = phase === "done";
@@ -53,13 +54,29 @@ export default function IntroGate({
     }
   }
 
+  async function enableSound() {
+    const el = videoRef.current;
+    if (!el) return;
+
+    try {
+      el.muted = false;
+      el.volume = 1;
+      setSoundEnabled(true);
+      await el.play();
+    } catch {
+      setError(
+        "O navegador bloqueou áudio automático. Toque novamente para ativar.",
+      );
+    }
+  }
+
   useEffect(() => {
     if (phase !== "playing") return;
     const el = videoRef.current;
     if (!el) return;
 
     // Autoplay com som é bloqueado; por isso usamos muted.
-    el.muted = true;
+    el.muted = !soundEnabled;
 
     const promise = el.play();
     if (promise && typeof (promise as Promise<void>).catch === "function") {
@@ -71,7 +88,7 @@ export default function IntroGate({
         );
       });
     }
-  }, [phase]);
+  }, [phase, soundEnabled]);
 
   return (
     <>
@@ -84,7 +101,7 @@ export default function IntroGate({
 
       {isOverlayVisible ? (
         <div
-          className={`fixed inset-0 z-[9999] bg-black transition-opacity duration-500 ${
+          className={`fixed inset-0 z-[9999] transition-opacity duration-500 ${
             phase === "exiting" ? "opacity-0" : "opacity-100"
           }`}
         >
@@ -105,6 +122,32 @@ export default function IntroGate({
               className="absolute inset-0 h-full w-full object-cover"
             />
 
+            {/* Controles mínimos */}
+            {phase !== "idle" ? (
+              <div className="absolute right-3 top-3 flex items-center gap-2">
+                {!soundEnabled ? (
+                  <button
+                    type="button"
+                    onClick={enableSound}
+                    className="rounded-lg border border-white/20 bg-black/35 px-3 py-2 text-xs font-semibold text-zinc-100 backdrop-blur hover:border-red-500/40"
+                  >
+                    Ativar som
+                  </button>
+                ) : (
+                  <span className="rounded-lg border border-white/15 bg-black/25 px-3 py-2 text-xs font-semibold text-zinc-200 backdrop-blur">
+                    Som ativo
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={finish}
+                  className="rounded-lg border border-white/20 bg-black/35 px-3 py-2 text-xs font-semibold text-zinc-100 backdrop-blur hover:border-red-500/40"
+                >
+                  Pular
+                </button>
+              </div>
+            ) : null}
+
             {/* Overlay leve apenas para legibilidade do botão (quando necessário) */}
             {phase === "idle" ? (
               <div className="absolute inset-0 flex items-center justify-center bg-black/25 px-6">
@@ -120,6 +163,12 @@ export default function IntroGate({
                     {error ?? "Clique para reproduzir o vídeo."}
                   </p>
                 </button>
+              </div>
+            ) : null}
+
+            {error && phase !== "idle" ? (
+              <div className="absolute bottom-4 left-1/2 w-[min(720px,calc(100%-2rem))] -translate-x-1/2 rounded-xl border border-red-500/25 bg-black/45 px-4 py-3 text-sm text-red-100 backdrop-blur">
+                {error}
               </div>
             ) : null}
           </div>
