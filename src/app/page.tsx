@@ -68,6 +68,17 @@ export default function Home() {
                 <p className="mt-3 text-sm text-zinc-200">
                   Se precisar de infos do local/data, fale com o anfitrião.
                 </p>
+                <p className="mt-3 text-sm text-zinc-200">
+                  WhatsApp:{" "}
+                  <a
+                    className="font-semibold text-zinc-50 underline decoration-red-500/50 underline-offset-4 hover:decoration-red-400"
+                    href="https://wa.me/5543999027670"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    +55 43 99902-7670
+                  </a>
+                </p>
               </div>
             </aside>
           </main>

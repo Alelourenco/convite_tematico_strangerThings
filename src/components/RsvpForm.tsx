@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Status = "YES" | "NO" | "MAYBE";
@@ -13,6 +13,9 @@ export default function RsvpForm() {
   const [bringCompanion, setBringCompanion] = useState(false);
   const [companionName, setCompanionName] = useState("");
   const [message, setMessage] = useState("");
+
+  const [statusOpen, setStatusOpen] = useState(false);
+  const statusWrapRef = useRef<HTMLDivElement | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +30,39 @@ export default function RsvpForm() {
         return "Talvez";
     }
   }, [status]);
+
+  const statusOptions = useMemo(
+    () =>
+      [
+        { value: "YES" as const, label: "Confirmado" },
+        { value: "MAYBE" as const, label: "Talvez" },
+        { value: "NO" as const, label: "Não vou conseguir" },
+      ],
+    [],
+  );
+
+  useEffect(() => {
+    function onDocMouseDown(e: MouseEvent) {
+      if (!statusOpen) return;
+      const target = e.target as Node | null;
+      if (!target) return;
+      if (statusWrapRef.current && !statusWrapRef.current.contains(target)) {
+        setStatusOpen(false);
+      }
+    }
+
+    function onDocKeyDown(e: KeyboardEvent) {
+      if (!statusOpen) return;
+      if (e.key === "Escape") setStatusOpen(false);
+    }
+
+    document.addEventListener("mousedown", onDocMouseDown);
+    document.addEventListener("keydown", onDocKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onDocMouseDown);
+      document.removeEventListener("keydown", onDocKeyDown);
+    };
+  }, [statusOpen]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -83,18 +119,70 @@ export default function RsvpForm() {
         </div>
 
         <div>
-            <label className="text-xs uppercase tracking-[0.22em] text-zinc-300">
-              Presença
-            </label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value as Status)}
-              className="mt-2 w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-zinc-50 outline-none focus:border-red-500/60 focus:shadow-[0_0_0_3px_rgba(255,0,0,0.12)]"
+          <label className="text-xs uppercase tracking-[0.22em] text-zinc-300">
+            Presença
+          </label>
+
+          <div ref={statusWrapRef} className="relative mt-2">
+            <button
+              type="button"
+              onClick={() => setStatusOpen((v) => !v)}
+              className="flex w-full items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-left text-zinc-50 outline-none focus:border-red-500/60 focus:shadow-[0_0_0_3px_rgba(255,0,0,0.12)]"
+              aria-haspopup="listbox"
+              aria-expanded={statusOpen}
             >
-              <option value="YES">Confirmado</option>
-              <option value="MAYBE">Talvez</option>
-              <option value="NO">Não vou conseguir</option>
-            </select>
+              <span className="text-sm font-medium">{statusLabel}</span>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className={`shrink-0 opacity-80 transition ${statusOpen ? "rotate-180" : "rotate-0"}`}
+                aria-hidden="true"
+              >
+                <path
+                  d="M6 9l6 6 6-6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+
+            {statusOpen ? (
+              <div
+                role="listbox"
+                className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-white/10 bg-zinc-950/85 backdrop-blur shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+              >
+                <div className="p-1">
+                  {statusOptions.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      role="option"
+                      aria-selected={opt.value === status}
+                      onClick={() => {
+                        setStatus(opt.value);
+                        setStatusOpen(false);
+                      }}
+                      className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition focus:outline-none focus:ring-2 focus:ring-red-500/40 ${
+                        opt.value === status
+                          ? "bg-red-600/30 text-zinc-50"
+                          : "text-zinc-200 hover:bg-white/10"
+                      }`}
+                    >
+                      <span>{opt.label}</span>
+                      {opt.value === status ? (
+                        <span className="text-xs text-zinc-100/90">Selecionado</span>
+                      ) : null}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
         </div>
 
         <div>

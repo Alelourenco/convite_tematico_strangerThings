@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-type Phase = "idle" | "playing" | "exiting" | "done";
+type Phase = "confirm" | "idle" | "playing" | "exiting" | "done";
 
 export default function IntroGate({
   children,
@@ -11,7 +11,7 @@ export default function IntroGate({
   children: React.ReactNode;
   videoSrc?: string;
 }) {
-  const [phase, setPhase] = useState<Phase>("playing");
+  const [phase, setPhase] = useState<Phase>("confirm");
   const [error, setError] = useState<string | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -51,6 +51,28 @@ export default function IntroGate({
       await videoRef.current?.play();
     } catch {
       setError("Não foi possível iniciar o vídeo.");
+    }
+  }
+
+  async function confirmContinue(enableAudio: boolean) {
+    setError(null);
+    setSoundEnabled(enableAudio);
+    setPhase("playing");
+
+    // Tenta iniciar imediatamente com gesto do usuário.
+    try {
+      const el = videoRef.current;
+      if (!el) return;
+      el.muted = !enableAudio;
+      await el.play();
+    } catch {
+      // Se falhar, cai no fluxo padrão que mostra mensagem e permite tentar novamente.
+      setPhase("idle");
+      setError(
+        enableAudio
+          ? "Seu navegador bloqueou o áudio. Toque em “Iniciar” para tentar novamente."
+          : "Seu navegador bloqueou o autoplay. Toque em “Iniciar”.",
+      );
     }
   }
 
@@ -111,8 +133,8 @@ export default function IntroGate({
               src={videoSrc}
               playsInline
               preload="auto"
-              muted
-              autoPlay
+              muted={!soundEnabled}
+              autoPlay={phase === "playing"}
               onEnded={finish}
               onError={() =>
                 setError(
@@ -123,7 +145,7 @@ export default function IntroGate({
             />
 
             {/* Controles mínimos */}
-            {phase !== "idle" ? (
+            {phase === "playing" ? (
               <div className="absolute right-3 top-3 flex items-center gap-2">
                 {!soundEnabled ? (
                   <button
@@ -145,6 +167,46 @@ export default function IntroGate({
                 >
                   Pular
                 </button>
+              </div>
+            ) : null}
+
+            {/* Pré-intro */}
+            {phase === "confirm" ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/50 px-6">
+                <div className="w-[min(760px,100%)] rounded-3xl border border-red-500/25 bg-black/55 p-6 text-center shadow-[0_0_120px_rgba(255,0,0,0.22)] backdrop-blur sm:p-8">
+                  <p className="text-xs uppercase tracking-[0.35em] text-zinc-300">
+                    Hawkins Signal
+                  </p>
+                  <p className="st-title mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
+                    Você deseja continuar?
+                  </p>
+                  <p className="mt-3 text-sm text-zinc-200 sm:text-base">
+                    Para ouvir o áudio, precisamos de um clique.
+                  </p>
+
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                    <button
+                      type="button"
+                      onClick={() => void confirmContinue(true)}
+                      className="rounded-2xl bg-red-600 px-5 py-3 text-sm font-semibold tracking-wide text-white shadow-[0_0_60px_rgba(255,0,0,0.30)] transition hover:bg-red-500"
+                    >
+                      Sim, continuar (com som)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void confirmContinue(false)}
+                      className="rounded-2xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold tracking-wide text-zinc-100 backdrop-blur transition hover:bg-white/15"
+                    >
+                      Continuar sem som
+                    </button>
+                  </div>
+
+                  {error ? (
+                    <div className="mt-4 rounded-xl border border-red-500/25 bg-black/40 px-4 py-3 text-sm text-red-100">
+                      {error}
+                    </div>
+                  ) : null}
+                </div>
               </div>
             ) : null}
 
