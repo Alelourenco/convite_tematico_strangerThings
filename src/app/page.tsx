@@ -55,7 +55,7 @@ export default function Home() {
                   </li>
                   <li className="flex gap-3">
                     <span className="mt-1 h-2 w-2 rounded-full bg-red-500 shadow-[0_0_18px_rgba(255,0,0,0.7)]" />
-                    Se ouvir um relógio...Corra!
+                    Se ouvir um relógio... Corra!
                   </li>
                 </ul>
               </div>
