@@ -47,15 +47,15 @@ export default function Home() {
                 <ul className="mt-4 space-y-3 text-sm text-zinc-200">
                   <li className="flex gap-3">
                     <span className="mt-1 h-2 w-2 rounded-full bg-red-500 shadow-[0_0_18px_rgba(255,0,0,0.7)]" />
-                    Chegue com fome (e curiosidade).
+                    Não se esqueça do traje para entrar no mundo invertido!
                   </li>
                   <li className="flex gap-3">
                     <span className="mt-1 h-2 w-2 rounded-full bg-red-500 shadow-[0_0_18px_rgba(255,0,0,0.7)]" />
-                    Se ouvir um relógio… finja que não ouviu.
+                    Venha com muita fome!
                   </li>
                   <li className="flex gap-3">
                     <span className="mt-1 h-2 w-2 rounded-full bg-red-500 shadow-[0_0_18px_rgba(255,0,0,0.7)]" />
-                    Traga sua melhor energia.
+                    Se ouvir um relógio...Corra!
                   </li>
                 </ul>
               </div>
