@@ -68,11 +68,7 @@ export default function IntroGate({
     } catch {
       // Se falhar, cai no fluxo padrão que mostra mensagem e permite tentar novamente.
       setPhase("idle");
-      setError(
-        enableAudio
-          ? "Seu navegador bloqueou o áudio. Toque em “Iniciar” para tentar novamente."
-          : "Seu navegador bloqueou o autoplay. Toque em “Iniciar”.",
-      );
+      setError("Seu navegador bloqueou o autoplay. Toque em “Iniciar”.");
     }
   }
 
@@ -180,24 +176,14 @@ export default function IntroGate({
                   <p className="st-title mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
                     Você deseja continuar?
                   </p>
-                  <p className="mt-3 text-sm text-zinc-200 sm:text-base">
-                    Para ouvir o áudio, precisamos de um clique.
-                  </p>
 
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                  <div className="mt-6 flex justify-center">
                     <button
                       type="button"
                       onClick={() => void confirmContinue(true)}
-                      className="rounded-2xl bg-red-600 px-5 py-3 text-sm font-semibold tracking-wide text-white shadow-[0_0_60px_rgba(255,0,0,0.30)] transition hover:bg-red-500"
+                      className="w-full max-w-sm rounded-2xl bg-red-600 px-5 py-3 text-sm font-semibold tracking-wide text-white shadow-[0_0_60px_rgba(255,0,0,0.30)] transition hover:bg-red-500"
                     >
-                      Sim, continuar (com som)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => void confirmContinue(false)}
-                      className="rounded-2xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold tracking-wide text-zinc-100 backdrop-blur transition hover:bg-white/15"
-                    >
-                      Continuar sem som
+                      Sim
                     </button>
                   </div>
 

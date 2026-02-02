@@ -68,17 +68,14 @@ export default function Home() {
                 <p className="mt-3 text-sm text-zinc-200">
                   Se precisar de infos do local/data, fale com o anfitrião.
                 </p>
-                <p className="mt-3 text-sm text-zinc-200">
-                  WhatsApp:{" "}
-                  <a
-                    className="font-semibold text-zinc-50 underline decoration-red-500/50 underline-offset-4 hover:decoration-red-400"
-                    href="https://wa.me/5543999027670"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    +55 43 99902-7670
-                  </a>
-                </p>
+                <a
+                  className="mt-4 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-semibold tracking-wide text-emerald-950 shadow-[0_0_50px_rgba(16,185,129,0.22)] transition hover:bg-emerald-400 sm:w-auto"
+                  href="https://wa.me/5543999027670"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Abrir WhatsApp
+                </a>
               </div>
             </aside>
           </main>
