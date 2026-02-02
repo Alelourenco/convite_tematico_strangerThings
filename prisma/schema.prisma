@@ -20,6 +20,7 @@ model Guest {
   phone         String?
   status        AttendanceStatus  @default(YES)
   additionalQty Int               @default(0)
+  companionName  String?
   message       String?
   createdAt     DateTime          @default(now())
 

@@ -18,7 +18,8 @@ export default async function AdminPage() {
   const counts = guests.reduce(
     (acc, g) => {
       acc.total += 1;
-      acc.totalPeople += 1 + (g.additionalQty ?? 0);
+      const companionCount = g.companionName ? 1 : (g.additionalQty ?? 0);
+      acc.totalPeople += 1 + companionCount;
       if (g.status === "YES") acc.yes += 1;
       else if (g.status === "MAYBE") acc.maybe += 1;
       else acc.no += 1;
@@ -92,8 +93,7 @@ export default async function AdminPage() {
               <tr className="text-xs uppercase tracking-[0.18em] text-zinc-300">
                 <th className="px-4 py-3">Nome</th>
                 <th className="px-4 py-3">Presença</th>
-                <th className="px-4 py-3">Acomp.</th>
-                <th className="px-4 py-3">WhatsApp</th>
+                <th className="px-4 py-3">Acompanhante</th>
                 <th className="px-4 py-3">Recado</th>
                 <th className="px-4 py-3">Criado</th>
               </tr>
@@ -110,10 +110,13 @@ export default async function AdminPage() {
                   <td className="px-4 py-3 text-zinc-200">
                     {statusLabel(g.status)}
                   </td>
-                  <td className="px-4 py-3 font-mono text-zinc-200">
-                    {g.additionalQty}
+                  <td className="px-4 py-3 text-zinc-200">
+                    {g.companionName
+                      ? g.companionName
+                      : g.additionalQty > 0
+                        ? `(+${g.additionalQty})`
+                        : "—"}
                   </td>
-                  <td className="px-4 py-3 text-zinc-200">{g.phone ?? "—"}</td>
                   <td className="px-4 py-3 text-zinc-200">{g.message ?? "—"}</td>
                   <td className="px-4 py-3 font-mono text-xs text-zinc-400">
                     {new Date(g.createdAt).toLocaleString("pt-BR")}
@@ -122,7 +125,7 @@ export default async function AdminPage() {
               ))}
               {guests.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-10 text-center text-zinc-300" colSpan={6}>
+                  <td className="px-4 py-10 text-center text-zinc-300" colSpan={5}>
                     Nenhum RSVP ainda.
                   </td>
                 </tr>

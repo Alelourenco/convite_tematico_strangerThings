@@ -11,10 +11,10 @@ export async function POST(req: Request) {
 
     const parsed = rsvpSchema.safeParse({
       ...json,
-      additionalQty:
-        typeof json?.additionalQty === "string"
-          ? Number(json.additionalQty)
-          : json?.additionalQty,
+      bringCompanion:
+        typeof json?.bringCompanion === "string"
+          ? json.bringCompanion === "true"
+          : Boolean(json?.bringCompanion),
     });
 
     if (!parsed.success) {
@@ -29,9 +29,13 @@ export async function POST(req: Request) {
     const created = await prisma.guest.create({
       data: {
         name: data.name,
-        phone: data.phone?.trim() ? data.phone.trim() : null,
+        phone: null,
         status: data.status,
-        additionalQty: data.additionalQty,
+        additionalQty: data.bringCompanion ? 1 : 0,
+        companionName:
+          data.bringCompanion && data.companionName?.trim()
+            ? data.companionName.trim()
+            : null,
         message: data.message?.trim() ? data.message.trim() : null,
       },
       select: { id: true, createdAt: true },

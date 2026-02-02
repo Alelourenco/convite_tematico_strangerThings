@@ -7,24 +7,30 @@ export const rsvpSchema = z.object({
     .min(1, "Informe seu nome")
     .min(2, "Nome muito curto")
     .max(80, "Nome muito longo"),
-  phone: z
+  status: z.enum(["YES", "NO", "MAYBE"]),
+  bringCompanion: z.boolean().default(false),
+  companionName: z
     .string()
     .trim()
-    .max(30, "Telefone muito longo")
+    .max(80, "Nome do acompanhante muito longo")
     .optional()
     .or(z.literal("")),
-  status: z.enum(["YES", "NO", "MAYBE"]),
-  additionalQty: z
-    .number()
-    .int()
-    .min(0)
-    .max(10),
   message: z
     .string()
     .trim()
     .max(280, "Mensagem muito longa")
     .optional()
     .or(z.literal("")),
+}).superRefine((val, ctx) => {
+  if (val.bringCompanion) {
+    if (!val.companionName || val.companionName.trim().length < 2) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Informe o nome do acompanhante",
+        path: ["companionName"],
+      });
+    }
+  }
 });
 
 export type RsvpInput = z.infer<typeof rsvpSchema>;

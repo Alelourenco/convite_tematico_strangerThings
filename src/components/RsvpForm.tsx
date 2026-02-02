@@ -9,9 +9,9 @@ export default function RsvpForm() {
   const router = useRouter();
 
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<Status>("YES");
-  const [additionalQty, setAdditionalQty] = useState(0);
+  const [bringCompanion, setBringCompanion] = useState(false);
+  const [companionName, setCompanionName] = useState("");
   const [message, setMessage] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -39,9 +39,9 @@ export default function RsvpForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
-          phone,
           status,
-          additionalQty,
+          bringCompanion,
+          companionName,
           message,
         }),
       });
@@ -82,20 +82,7 @@ export default function RsvpForm() {
           />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className="text-xs uppercase tracking-[0.22em] text-zinc-300">
-              WhatsApp (opcional)
-            </label>
-            <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="(11) 99999-9999"
-              className="mt-2 w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-zinc-50 outline-none placeholder:text-zinc-400 focus:border-red-500/60 focus:shadow-[0_0_0_3px_rgba(255,0,0,0.12)]"
-            />
-          </div>
-
-          <div>
+        <div>
             <label className="text-xs uppercase tracking-[0.22em] text-zinc-300">
               Presença
             </label>
@@ -108,34 +95,53 @@ export default function RsvpForm() {
               <option value="MAYBE">Talvez</option>
               <option value="NO">Não vou conseguir</option>
             </select>
-          </div>
         </div>
 
         <div>
           <label className="text-xs uppercase tracking-[0.22em] text-zinc-300">
-            Vou levar acompanhantes (0 a 10)
+            Vai levar acompanhante?
           </label>
-          <div className="mt-2 flex items-center gap-3">
-            <input
-              type="range"
-              min={0}
-              max={10}
-              value={additionalQty}
-              onChange={(e) => setAdditionalQty(Number(e.target.value))}
-              className="w-full accent-red-500"
-            />
-            <span className="w-10 text-right font-mono text-sm text-zinc-200">
-              {additionalQty}
-            </span>
+          <div className="mt-2 flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3">
+            <span className="text-sm text-zinc-200">{bringCompanion ? "Sim" : "Não"}</span>
+            <button
+              type="button"
+              onClick={() => setBringCompanion((v) => !v)}
+              className={`relative h-7 w-12 rounded-full border transition ${
+                bringCompanion
+                  ? "border-red-500/50 bg-red-600/60"
+                  : "border-white/15 bg-white/10"
+              }`}
+              aria-pressed={bringCompanion}
+              aria-label="Alternar acompanhante"
+            >
+              <span
+                className={`absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-white shadow transition ${
+                  bringCompanion ? "right-1" : "left-1"
+                }`}
+              />
+            </button>
           </div>
-          <p className="mt-2 text-xs text-zinc-400">
-            Status: <span className="text-zinc-200">{statusLabel}</span>
-          </p>
+          <p className="mt-2 text-xs text-zinc-400">Status: <span className="text-zinc-200">{statusLabel}</span></p>
         </div>
+
+        {bringCompanion ? (
+          <div>
+            <label className="text-xs uppercase tracking-[0.22em] text-zinc-300">
+              Nome do acompanhante
+            </label>
+            <input
+              value={companionName}
+              onChange={(e) => setCompanionName(e.target.value)}
+              required
+              placeholder="Ex: Maria Silva"
+              className="mt-2 w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-zinc-50 outline-none placeholder:text-zinc-400 focus:border-red-500/60 focus:shadow-[0_0_0_3px_rgba(255,0,0,0.12)]"
+            />
+          </div>
+        ) : null}
 
         <div>
           <label className="text-xs uppercase tracking-[0.22em] text-zinc-300">
-            Recado pra Brenda (opcional)
+            Recado pra Brenda
           </label>
           <textarea
             value={message}
