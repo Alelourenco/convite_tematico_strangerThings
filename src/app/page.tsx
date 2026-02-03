@@ -1,9 +1,11 @@
 import RsvpForm from "@/components/RsvpForm";
 import IntroGate from "@/components/IntroGate";
+import HawkinsParticles from "@/components/HawkinsParticles";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-hawkins text-zinc-50">
+    <div className="relative min-h-screen bg-hawkins text-zinc-50">
+      <HawkinsParticles />
       <IntroGate>
         <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col px-5 py-10 sm:px-8">
           <header className="mb-10">
