@@ -11,6 +11,7 @@ type Particle = {
   a: number;
   tw: number;
   hue: number;
+  streak: number;
 };
 
 function clamp(n: number, min: number, max: number) {
@@ -45,6 +46,8 @@ export default function HawkinsParticles({
     let w = 0;
     let h = 0;
     let dpr = 1;
+    let lastT = 0;
+    let nextFlashAt = 0;
 
     const particles: Particle[] = [];
 
@@ -71,55 +74,106 @@ export default function HawkinsParticles({
       particles.length = 0;
       const n = targetCount();
       for (let i = 0; i < n; i++) {
+        const isCold = Math.random() < 0.18;
+        const hue = isCold ? 205 : Math.random() < 0.1 ? 285 : 355;
+        const r = 0.6 + Math.random() * 1.7;
+
         particles.push({
           x: Math.random() * w,
           y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 0.25,
-          vy: -0.08 - Math.random() * 0.22,
-          r: 0.7 + Math.random() * 1.8,
-          a: 0.12 + Math.random() * 0.25,
+          vx: (Math.random() - 0.5) * 0.18,
+          vy: 0.35 + Math.random() * 1.2,
+          r,
+          a: 0.06 + Math.random() * 0.16,
           tw: Math.random() * Math.PI * 2,
-          hue: Math.random() < 0.75 ? 0 : 195, // red + cold-cyan accents
+          hue,
+          streak: Math.random() < 0.5 ? 0 : 4 + Math.random() * 12,
         });
       }
+
+      lastT = 0;
+      nextFlashAt = 1200 + Math.random() * 3500;
     }
 
     function step(t: number) {
       context.clearRect(0, 0, w, h);
 
-      // Subtle foggy glow layer
-      const fog = context.createRadialGradient(w * 0.5, h * 0.15, 0, w * 0.5, h * 0.15, Math.max(w, h) * 0.9);
-      fog.addColorStop(0, "rgba(255, 60, 60, 0.06)");
-      fog.addColorStop(0.55, "rgba(170, 90, 255, 0.04)");
+      const dt = lastT ? clamp((t - lastT) / 16.67, 0.5, 2) : 1;
+      lastT = t;
+
+      // Tenebrous fog + vignette (kept subtle to avoid washing UI)
+      const fog = context.createRadialGradient(
+        w * 0.45,
+        h * 0.25,
+        0,
+        w * 0.45,
+        h * 0.25,
+        Math.max(w, h) * 1.05,
+      );
+      fog.addColorStop(0, "rgba(255, 30, 70, 0.05)");
+      fog.addColorStop(0.55, "rgba(120, 40, 190, 0.035)");
       fog.addColorStop(1, "rgba(0, 0, 0, 0)");
       context.fillStyle = fog;
       context.fillRect(0, 0, w, h);
 
+      const vignette = context.createRadialGradient(
+        w * 0.5,
+        h * 0.55,
+        Math.min(w, h) * 0.15,
+        w * 0.5,
+        h * 0.55,
+        Math.max(w, h) * 0.78,
+      );
+      vignette.addColorStop(0, "rgba(0, 0, 0, 0)");
+      vignette.addColorStop(1, "rgba(0, 0, 0, 0.28)");
+      context.fillStyle = vignette;
+      context.fillRect(0, 0, w, h);
+
+      // Occasional subtle "lightning" flash
+      if (t > nextFlashAt) {
+        const flashA = 0.08 + Math.random() * 0.08;
+        context.fillStyle = `rgba(120, 200, 255, ${flashA})`;
+        context.fillRect(0, 0, w, h);
+        nextFlashAt = t + 1800 + Math.random() * 5000;
+      }
+
       for (const p of particles) {
-        p.tw += 0.02;
-        const twinkle = 0.55 + 0.45 * Math.sin(p.tw + t * 0.001);
-        const alpha = p.a * twinkle;
+        p.tw += 0.02 * dt;
+        const twinkle = 0.5 + 0.5 * Math.sin(p.tw + t * 0.001);
+        const alpha = p.a * (0.6 + 0.4 * twinkle);
 
-        p.x += p.vx;
-        p.y += p.vy;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
 
-        // Wrap around edges for continuous drift
-        if (p.y < -8) {
-          p.y = h + 8;
+        // Wrap around edges for continuous fall
+        if (p.y > h + 12) {
+          p.y = -12;
           p.x = Math.random() * w;
+          p.vy = 0.35 + Math.random() * 1.2;
+          p.vx = (Math.random() - 0.5) * 0.18;
         }
-        if (p.x < -8) p.x = w + 8;
-        if (p.x > w + 8) p.x = -8;
+        if (p.x < -12) p.x = w + 12;
+        if (p.x > w + 12) p.x = -12;
+
+        // Streaky fall (spores/ash) + core dot
+        if (p.streak > 0) {
+          context.beginPath();
+          context.moveTo(p.x, p.y - p.streak);
+          context.lineTo(p.x, p.y + p.streak);
+          context.strokeStyle = `hsla(${p.hue}, 90%, 58%, ${alpha * 0.28})`;
+          context.lineWidth = Math.max(0.7, p.r * 0.55);
+          context.stroke();
+        }
 
         context.beginPath();
         context.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        context.fillStyle = `hsla(${p.hue}, 95%, 62%, ${alpha})`;
+        context.fillStyle = `hsla(${p.hue}, 92%, 60%, ${alpha})`;
         context.fill();
 
         // Tiny glow halo
         context.beginPath();
-        context.arc(p.x, p.y, p.r * 3.2, 0, Math.PI * 2);
-        context.fillStyle = `hsla(${p.hue}, 95%, 60%, ${alpha * 0.18})`;
+        context.arc(p.x, p.y, p.r * 3.0, 0, Math.PI * 2);
+        context.fillStyle = `hsla(${p.hue}, 95%, 58%, ${alpha * 0.14})`;
         context.fill();
       }
 
@@ -147,7 +201,7 @@ export default function HawkinsParticles({
       ref={canvasRef}
       aria-hidden="true"
       className={
-        "pointer-events-none absolute inset-0 z-0 opacity-80 mix-blend-screen " +
+        "pointer-events-none absolute inset-0 z-0 opacity-70 mix-blend-soft-light " +
         className
       }
     />
